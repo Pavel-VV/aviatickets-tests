@@ -24,7 +24,7 @@ export class Locations {
         this.cities = this.serializeCities(cities);
         this.shortCitiesList = this.createShortCitiesList(this.cities);
         this.airlines = this.serializeAirlines(airlines);
-        // console.log(this.cities);
+        console.log(airlines);
 
         return response;        
     }
@@ -63,6 +63,7 @@ export class Locations {
 
     serializeCountry(countries){
         // {'Country code': {...}}
+        if(!Array.isArray(countries) || !countries.length) return {};
         return countries.reduce((acc, country) => {
             acc[country.code] = country;
             return acc;
