@@ -6,6 +6,20 @@ const countries = [{ code: 'UKR', name: 'Ukraine' }];
 const cities = [{ country_code: 'UKR', name: 'Kharkiv', code: 'KH' }]
 const airlines = [{ name: 'airBaltic', code: 'BT' }];
 
+jest.mock('../../services/apiService', () => {
+    const mockApi = {
+        countries: jest.fn(() => Promise.resolve([{ code: 'UKR', name: 'Ukraine' }])),
+        cities: jest.fn(() => Promise.resolve([{ country_code: 'UKR', name: 'Kharkiv', code: 'KH' }])),
+        airlines: jest.fn(() => Promise.resolve([{ name: 'airBaltic', code: 'BT' }]))
+    }
+
+    return {
+        Api: jest.fn(() => mockApi)
+    }
+})
+
+const apiService = new Api()
+
 describe('Location store tests', () => {
     beforeEach(() => {
         locationsInstance.countries = locationsInstance.serializeCountry(countries);
@@ -92,6 +106,10 @@ describe('Location store tests', () => {
         expect(res).toEqual(expectedData)        
     })
 
+    it('Check correct init() method call', () => {
+        const instance = new Locations(apiService, { formatDate })
+        expect(instance.init()).resolves.toEqual([countries, cities, airlines])
+    })
 })
 
 // 23.29
