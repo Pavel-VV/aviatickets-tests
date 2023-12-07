@@ -24,7 +24,7 @@ export class Locations {
         this.cities = this.serializeCities(cities);
         this.shortCitiesList = this.createShortCitiesList(this.cities);
         this.airlines = this.serializeAirlines(airlines);
-        console.log(airlines);
+        // console.log(airlines);
 
         return response;        
     }
@@ -117,7 +117,9 @@ export class Locations {
 
     async fetchTickets(params) {
         const respons = await this.api.prices(params);
+        console.log(respons.data);
         this.lastSearch = this.serializeTickets(respons.data);
+        console.log(this.lastSearch);
     }
 };
 

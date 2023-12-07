@@ -2,14 +2,15 @@ import locationsInstance, { Locations } from '../locations';
 import { formatDate } from '../../helpers/date';
 import api, { Api } from '../../services/apiService';
 
-const countries = [{ code: 'UKR', name: 'Ukraine' }];
-const cities = [{ country_code: 'UKR', name: 'Kharkiv', code: 'KH' }]
+const countries = [{ code: 'UKR', name: 'Ukraine' }, { code: 'RUS', name: 'Russia' }];
+const cities = [{ country_code: 'UKR', name: 'Kharkiv', code: 'KH' }, { country_code: 'RUS', name: 'Moscow', code: 'MOW' }]
 const airlines = [{ name: 'airBaltic', code: 'BT' }];
+const tickets = [{ airline: 'BT', destination: 'KH', origin: 'MOW', departure_at: '2023-12-07T23:45:00+03:00', return_at: '2023-12-09T20:10:00+03:00'}]
 
 jest.mock('../../services/apiService', () => {
     const mockApi = {
-        countries: jest.fn(() => Promise.resolve([{ code: 'UKR', name: 'Ukraine' }])),
-        cities: jest.fn(() => Promise.resolve([{ country_code: 'UKR', name: 'Kharkiv', code: 'KH' }])),
+        countries: jest.fn(() => Promise.resolve([{ code: 'UKR', name: 'Ukraine' }, { code: 'RUS', name: 'Russia' }])),
+        cities: jest.fn(() => Promise.resolve([{ country_code: 'UKR', name: 'Kharkiv', code: 'KH' }, { country_code: 'RUS', name: 'Moscow', code: 'MOW' }])),
         airlines: jest.fn(() => Promise.resolve([{ name: 'airBaltic', code: 'BT' }]))
     }
 
@@ -45,7 +46,8 @@ describe('Location store tests', () => {
     it('Check correct serialize country', () => {
         const res = locationsInstance.serializeCountry(countries);
         const expectedData = {
-            'UKR': { code: 'UKR', name: 'Ukraine' }
+            'UKR': { code: 'UKR', name: 'Ukraine' },
+            'RUS': { code: 'RUS', name: 'Russia' }
         }
         expect(res).toEqual(expectedData)
     })
@@ -59,7 +61,8 @@ describe('Location store tests', () => {
     it('Check correct serialize cities', () => {
         const res = locationsInstance.serializeCities(cities)
         const expextedData = {
-            'KH': { country_code: 'UKR', name: 'Kharkiv', code: 'KH', country_name: 'Ukraine', full_name: 'Kharkiv,Ukraine' }
+            'KH': { country_code: 'UKR', name: 'Kharkiv', code: 'KH', country_name: 'Ukraine', full_name: 'Kharkiv,Ukraine' },
+            'MOW': { country_code: 'RUS', name: 'Moscow', code: 'MOW', country_name: 'Russia', full_name: 'Moscow,Russia' }
         }
         expect(res).toEqual(expextedData)
     })
@@ -101,7 +104,8 @@ describe('Location store tests', () => {
         const newCities = locationsInstance.cities; // cities after serializeCities
         const res = locationsInstance.createShortCitiesList(newCities)
         const expectedData = {
-            'Kharkiv,Ukraine': null
+            'Kharkiv,Ukraine': null,
+            'Moscow,Russia': null
         }
         expect(res).toEqual(expectedData)        
     })
@@ -110,7 +114,30 @@ describe('Location store tests', () => {
         const instance = new Locations(apiService, { formatDate })
         expect(instance.init()).resolves.toEqual([countries, cities, airlines])
     })
+
+    it('Check correct serialize tickets', () => {
+        const res = locationsInstance.serializeTickets(tickets);
+        const expectedData = [{
+            airline: 'BT',
+            destination: 'KH',
+            origin: 'MOW',
+            departure_at: '2023-12-07T23:45:00+03:00',
+            return_at: '2023-12-09T20:10:00+03:00',
+            airline_name: 'airBaltic',
+            airline_logo: 'http://pics.avs.io/200/200/BT.png',
+            destination_name: 'Kharkiv',
+            origin_name: 'Moscow',
+            departure_at: '07 Dec 2023 23:45',
+            return_at: '09 Dec 2023 20:10'
+            //ticket_id в location.js нужно закомитить перед запуском теста, так как id генерируется случайным образом, и предугадать его невозможно
+        }]
+        expect(res).toEqual(expectedData)
+        // [{ airline: 'BT',
+        //  destination: 'KH',
+        //   origin: 'MOW',
+        //    departure_at: '2023-12-07T23:45:00+03:00',
+        //     return_at: '2023-12-09T20:10:00+03:00'}]
+    })
 })
 
-// 23.29
-// осталось сделать тест serializeTickets и тест init()
+// осталось сделать тест serializeTickets
