@@ -27,7 +27,6 @@ describe('Location store tests', () => {
         locationsInstance.countries = locationsInstance.serializeCountry(countries);
         locationsInstance.cities = locationsInstance.serializeCities(cities);
         locationsInstance.airlines = locationsInstance.serializeAirlines(airlines);
-        locationsInstance.lastSearch = locationsInstance.serializeTickets(tickets);
     })
 
     it('Check that locationInstance is instance of Locations class', () => {
@@ -117,11 +116,6 @@ describe('Location store tests', () => {
         expect(instance.init()).resolves.toEqual([countries, cities, airlines])
     })
 
-    it('Check correct fetchTickets() method call', () => {
-        const instance = new Locations(apiService, { formatDate })
-        expect(instance.fetchTickets()).resolves.toEqual(tickets)
-    })
-
     it('Check correct serialize tickets', () => {
         const res = locationsInstance.serializeTickets(tickets);
         const expectedData = [{
@@ -141,8 +135,11 @@ describe('Location store tests', () => {
         expect(res).toEqual(expectedData)
     })
 
-    // it('Check correct fetchTickets() method call', () => {
-    //     const instance = new Locations(apiService, { formatDate })
-    //     expect(instance.fetchTickets()).resolves.toEqual(tickets)
-    // })
+    it('Check correct fetchTickets() method call', () => {
+        const instance = new Locations(apiService, { formatDate })
+        instance.countries = locationsInstance.serializeCountry(countries);
+        instance.cities = locationsInstance.serializeCities(cities);
+        instance.airlines = locationsInstance.serializeAirlines(airlines);
+        expect(instance.fetchTickets()).resolves.toEqual(tickets)
+    })
 })
