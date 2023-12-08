@@ -116,10 +116,11 @@ export class Locations {
     }
 
     async fetchTickets(params) {
-        const respons = await this.api.prices(params);
-        console.log(respons.data);
-        this.lastSearch = this.serializeTickets(respons.data);
-        console.log(this.lastSearch);
+        const response = await this.api.prices(params);
+        console.log(response);
+        this.lastSearch = this.serializeTickets(response);
+        // console.log(this.lastSearch);
+        return response;
     }
 };
 

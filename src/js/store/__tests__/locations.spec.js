@@ -11,7 +11,8 @@ jest.mock('../../services/apiService', () => {
     const mockApi = {
         countries: jest.fn(() => Promise.resolve([{ code: 'UKR', name: 'Ukraine' }, { code: 'RUS', name: 'Russia' }])),
         cities: jest.fn(() => Promise.resolve([{ country_code: 'UKR', name: 'Kharkiv', code: 'KH' }, { country_code: 'RUS', name: 'Moscow', code: 'MOW' }])),
-        airlines: jest.fn(() => Promise.resolve([{ name: 'airBaltic', code: 'BT' }]))
+        airlines: jest.fn(() => Promise.resolve([{ name: 'airBaltic', code: 'BT' }])),
+        prices: jest.fn(() => Promise.resolve([{ airline: 'BT', destination: 'KH', origin: 'MOW', departure_at: '2023-12-07T23:45:00+03:00', return_at: '2023-12-09T20:10:00+03:00' }]))
     }
 
     return {
@@ -26,6 +27,7 @@ describe('Location store tests', () => {
         locationsInstance.countries = locationsInstance.serializeCountry(countries);
         locationsInstance.cities = locationsInstance.serializeCities(cities);
         locationsInstance.airlines = locationsInstance.serializeAirlines(airlines);
+        locationsInstance.lastSearch = locationsInstance.serializeTickets(tickets);
     })
 
     it('Check that locationInstance is instance of Locations class', () => {
@@ -115,6 +117,11 @@ describe('Location store tests', () => {
         expect(instance.init()).resolves.toEqual([countries, cities, airlines])
     })
 
+    it('Check correct fetchTickets() method call', () => {
+        const instance = new Locations(apiService, { formatDate })
+        expect(instance.fetchTickets()).resolves.toEqual(tickets)
+    })
+
     it('Check correct serialize tickets', () => {
         const res = locationsInstance.serializeTickets(tickets);
         const expectedData = [{
@@ -132,12 +139,10 @@ describe('Location store tests', () => {
             //ticket_id в location.js нужно закомитить перед запуском теста, так как id генерируется случайным образом, и предугадать его невозможно
         }]
         expect(res).toEqual(expectedData)
-        // [{ airline: 'BT',
-        //  destination: 'KH',
-        //   origin: 'MOW',
-        //    departure_at: '2023-12-07T23:45:00+03:00',
-        //     return_at: '2023-12-09T20:10:00+03:00'}]
     })
-})
 
-// осталось сделать тест serializeTickets
+    // it('Check correct fetchTickets() method call', () => {
+    //     const instance = new Locations(apiService, { formatDate })
+    //     expect(instance.fetchTickets()).resolves.toEqual(tickets)
+    // })
+})
