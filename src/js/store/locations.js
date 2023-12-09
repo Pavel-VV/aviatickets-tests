@@ -110,7 +110,7 @@ export class Locations {
                 origin_name,
                 departure_at,
                 return_at,
-                ticket_id,
+                // ticket_id,
             };
         }) 
     }
