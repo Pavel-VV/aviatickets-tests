@@ -110,13 +110,14 @@ export class Locations {
                 origin_name,
                 departure_at,
                 return_at,
-                // ticket_id,
+                ticket_id,
             };
         }) 
     }
 
     async fetchTickets(params) {
         const response = await this.api.prices(params);
+        console.log(params);
         console.log(response);
         this.lastSearch = this.serializeTickets(response);
         // console.log(this.lastSearch);
