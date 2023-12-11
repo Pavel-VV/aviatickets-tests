@@ -117,8 +117,8 @@ export class Locations {
 
     async fetchTickets(params) {
         const response = await this.api.prices(params);
-        console.log(params);
-        console.log(response);
+        // console.log(params);
+        // console.log(response);
         this.lastSearch = this.serializeTickets(response);
         // console.log(this.lastSearch);
         return response;

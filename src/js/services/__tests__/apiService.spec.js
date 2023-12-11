@@ -42,10 +42,22 @@ describe('Test API servise', () => {
         expect(axios.get).toHaveBeenCalledWith(`${config.url}/cities`)
     })
 
+    it('Fetch sities failure', async () => {
+        const errMsg = 'Api Error';
+        axios.get.mockImplementationOnce(() => Promise.reject(new Error(errMsg)))
+        await expect(api.cities()).rejects.toThrow(errMsg);
+    })
+
     it('Success fetch countries', async () => {
         axios.get.mockImplementationOnce(() => Promise.resolve({ data: countries }))
         await expect(api.countries()).resolves.toEqual(countries)
         expect(axios.get).toHaveBeenCalledWith(`${config.url}/countries`)
+    })
+
+    it('Fetch countries failure', async () => {
+        const errMsg = 'Api error';
+        axios.get.mockImplementationOnce(() => Promise.reject(new Error(errMsg)))
+        await expect(api.countries()).rejects.toThrow(errMsg)
     })
 
     it('Success fetch airlines', async () => {
@@ -54,9 +66,23 @@ describe('Test API servise', () => {
         expect(axios.get).toHaveBeenCalledWith(`${config.url}/airlines`)
     })
 
+    it('Fetch airlines failure', async () => {
+        const errMsg = 'Api Error';
+        axios.get.mockImplementationOnce(() => Promise.reject(new Error(errMsg)))
+        await expect(api.airlines()).rejects.toThrow(errMsg)
+    })
+
     it('Success fetch prices', async () => {
         axios.get.mockImplementationOnce(() => Promise.resolve({ data: { data: tickets }}))
         await expect(api.prices(params)).resolves.toEqual(tickets)
         expect(axios.get).toHaveBeenCalledWith(`${config.url}/prices/cheap`, { params })
     })
+
+    it('Fetch prices failure', async () => {
+        const errMsg = 'Api Error';
+        axios.get.mockImplementationOnce(() => Promise.reject(new Error(errMsg)))
+        await expect(api.prices()).rejects.toThrow(errMsg)
+    })
 })
+
+// 11:15
